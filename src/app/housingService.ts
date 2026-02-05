@@ -15,11 +15,15 @@ export class HousingService {
     return this.http.get<HousingLocation[]>(this.url);
   }
 
-  getHousingLocationById(id: number): Observable<HousingLocation> {
+  getHousingLocationById(id: number | string): Observable<HousingLocation> {
     return this.http.get<HousingLocation>(`${this.url}/${id}`);
   }
 
   submitApplication(firstName: string, lastName: string, email: string) {
     console.log(`Application received: ${firstName}, ${lastName}, ${email}.`);
+  }
+
+  addHousingLocation(location: Omit<HousingLocation, 'id'>): Observable<HousingLocation> {
+    return this.http.post<HousingLocation>(this.url, location);
   }
 }

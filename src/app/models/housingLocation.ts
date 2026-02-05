@@ -1,5 +1,5 @@
 export interface HousingLocation {
-  id: number;
+  id: number | string;
   name: string;
   city: string;
   state: string
@@ -7,4 +7,10 @@ export interface HousingLocation {
   availableUnits: number
   wifi: boolean
   laundry: boolean
+  price: number;
+  available: boolean;
+  coordinate: {
+    latitude: number;
+    longitude: number;
+  };
 }
