@@ -1,11 +1,13 @@
 import {Component, input} from '@angular/core';
 import {HousingLocation} from '../models/housingLocation';
 import {NgOptimizedImage} from '@angular/common';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-housing-location',
   imports: [
-    NgOptimizedImage
+    NgOptimizedImage,
+    RouterLink
   ],
   template: `
     <section class="listing">
@@ -15,6 +17,7 @@ import {NgOptimizedImage} from '@angular/common';
       <p class="listing-location">{{ housingLocation().city }},
         {{ housingLocation().state }}
       </p>
+      <a [routerLink]="['/details', housingLocation().id]">Learn More</a>
     </section>
   `,
   styleUrl: './housing-location.component.css',

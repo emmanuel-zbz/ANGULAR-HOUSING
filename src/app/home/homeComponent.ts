@@ -1,7 +1,7 @@
-import {Component, inject, signal} from '@angular/core';
-import {HousingLocation} from '../models/housingLocation';
+import {Component, computed, inject, signal} from '@angular/core';
 import {HousingLocationComponent} from '../housing-location/housing-location.component';
 import {HousingService} from '../housingService';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-home',
@@ -12,12 +12,12 @@ import {HousingService} from '../housingService';
   template: `
     <section>
       <form>
-        <input type="text" placeholder="Filter by city">
-        <button class="primary" type="button">Search</button>
+        <input type="text" placeholder="Filter by city" #filter>
+        <button class="primary" type="button" (click)="filterResults(filter.value)">Search</button>
       </form>
     </section>
     <section class="results">
-      @for (housingLocation of housingLocationList(); track housingLocation.id) {
+      @for (housingLocation of filteredLocationList(); track housingLocation.id) {
         <app-housing-location [housingLocation]="housingLocation"></app-housing-location>
       }
     </section>
@@ -26,8 +26,30 @@ import {HousingService} from '../housingService';
 })
 export class HomeComponent {
 
-
   private housingService = inject(HousingService);
 
-  readonly housingLocationList = signal(this.housingService.getAllHousingLocations());
+
+  readonly housingLocationList = toSignal(
+    this.housingService.getAllHousingLocations(),
+    {initialValue: []}
+  );
+
+  readonly filterQuery = signal<string>('');
+
+  readonly filteredLocationList = computed(() => {
+    const list = this.housingLocationList();
+    const text = this.filterQuery().toLowerCase();
+
+    if (!text) {
+      return list;
+    }
+
+    return list.filter(item =>
+      item.city.toLowerCase().includes(text)
+    );
+  });
+
+  filterResults(filtro: string) {
+    this.filterQuery.set(filtro);
+  }
 }
